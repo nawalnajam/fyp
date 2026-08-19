@@ -88,9 +88,11 @@ export default function HeroSearch() {
   // ✅ Send Audio to AssemblyAI
  // ✅ Updated sendToAssemblyAI function
 
+// ✅ Updated sendToAssemblyAI function in HeroSearch.jsx
 const sendToAssemblyAI = async (audioBlob) => {
   try {
     setIsProcessing(true);
+    setTranscript("⏳ Processing...");
     
     const reader = new FileReader();
     reader.readAsDataURL(audioBlob);
@@ -99,51 +101,77 @@ const sendToAssemblyAI = async (audioBlob) => {
       try {
         const base64Audio = reader.result.split(",")[1];
         
+        if (!base64Audio || base64Audio.length < 100) {
+          throw new Error("Audio data is too small or empty. Please speak louder.");
+        }
+        
+        console.log("📤 Sending audio to API...");
+        
         const res = await fetch("/api/assemblyai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ audioBase64: base64Audio }),
         });
         
-        const data = await res.json();
+        console.log("📥 Response status:", res.status);
         
-        if (data.success) {
-          // ✅ Even if confidence is low, we use the text
-          const recognizedText = data.text || "";
+        // ✅ Check response
+        if (!res.ok) {
+          let errorMsg = "Voice search failed. Please try again.";
+          try {
+            const errorData = await res.json();
+            if (errorData.error) {
+              errorMsg = errorData.error;
+            }
+          } catch (e) {
+            errorMsg = `Server error: ${res.status}`;
+          }
+          throw new Error(errorMsg);
+        }
+        
+        const data = await res.json();
+        console.log("📥 Response data:", data);
+        
+        if (data.success && data.text) {
+          const recognizedText = data.text.trim();
           console.log("✅ Recognized:", recognizedText);
-          console.log("✅ Confidence:", data.confidence);
           
           setTranscript(recognizedText);
           setSearchQuery(recognizedText);
           
-          // ✅ If text is too short or empty, show a message
-          if (!recognizedText || recognizedText.trim().length < 2) {
+          if (!recognizedText || recognizedText.length < 2) {
             alert("Could not hear clearly. Please speak louder or try again.");
             setIsProcessing(false);
             return;
           }
           
-          // ✅ Always search even if confidence is low
-          if (recognizedText.trim()) {
+          // ✅ Search with recognized text
+          const searchIntent = detectSearchIntent(recognizedText);
+          
+          if (searchIntent) {
+            const redirectUrl = buildRedirectUrl(recognizedText);
+            router.push(redirectUrl);
+          } else {
             router.push(`/cars?search=${encodeURIComponent(recognizedText.trim())}`);
           }
           
         } else {
-          console.error("❌ AssemblyAI Error:", data.error);
-          
-          // ✅ Handle confidence error specifically
-          if (data.error && data.error.includes("confidence")) {
-            alert("Could not detect language clearly. Please speak in English or Urdu.");
-          } else {
-            alert("Error processing voice: " + data.error);
-          }
+          const errorMsg = data.error || "Could not understand voice. Please try again.";
+          console.error("❌ AssemblyAI Error:", errorMsg);
+          alert(errorMsg);
           setIsProcessing(false);
         }
+        
       } catch (error) {
         console.error("❌ Error:", error);
-        alert("Error processing voice. Please try again.");
+        alert(error.message || "Error processing voice. Please try again.");
         setIsProcessing(false);
       }
+    };
+    
+    reader.onerror = () => {
+      alert("Failed to read audio file. Please try again.");
+      setIsProcessing(false);
     };
     
   } catch (error) {
@@ -152,9 +180,6 @@ const sendToAssemblyAI = async (audioBlob) => {
     setIsProcessing(false);
   }
 };
-          
-     
-
   // ✅ Toggle Voice
   const toggleVoice = () => {
     if (isListening) {
@@ -197,7 +222,7 @@ const sendToAssemblyAI = async (audioBlob) => {
 
   // ✅ Analyze Image - Fixed with Fallback
   
-  // /components/HeroSearch.jsx - Updated analyzeAndSearch function
+  // /c
 
 // /components/HeroSearch.jsx - Updated analyzeAndSearch function
 

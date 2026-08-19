@@ -68,11 +68,11 @@ export default function SignUpPage() {
 
       {/* BACKGROUND */}
       <img
-        src="/bg3jpg.jpg"
+        src="/sign.png"
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/40 " />
 
       {/* CARD */}
       <div

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import SellButton from "@/components/SellButton";
 import SignInButton from "@/components/SignInButton";
 import {
@@ -20,19 +20,19 @@ export default function Navbar() {
   const [userMenu, setUserMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const router = useRouter();
+  const pathname = usePathname(); // ✅ current route
 
   useEffect(() => {
     const storedUser  = localStorage.getItem("user");
     const storedAdmin = localStorage.getItem("admin");
     if (storedUser)  setUser(JSON.parse(storedUser));
     if (storedAdmin) setAdmin(JSON.parse(storedAdmin));
-    
+
     if (storedUser || storedAdmin) {
       fetchUnreadCount();
     }
   }, []);
 
-  // ✅ Fetch unread count - ONLY for received messages
   const fetchUnreadCount = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -41,12 +41,12 @@ export default function Navbar() {
       const res = await fetch("/api/messages?type=received&limit=1", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (!res.ok) return;
-      
+
       const text = await res.text();
       if (!text || text.trim() === "") return;
-      
+
       const data = JSON.parse(text);
       if (data.success) {
         setUnreadCount(data.unreadCount || 0);
@@ -56,10 +56,9 @@ export default function Navbar() {
     }
   };
 
-  // ✅ Poll for new messages every 30 seconds
   useEffect(() => {
     if (!user && !admin) return;
-    
+
     const interval = setInterval(() => {
       fetchUnreadCount();
     }, 30000);
@@ -80,11 +79,26 @@ export default function Navbar() {
 
   const isAdmin = admin && admin.role === "admin";
 
+  // ✅ helper: check karta hai ke ye link currently active hai ya nahi
+  const isActive = (href) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  // ✅ active/inactive dono states ke liye common classes
+  const navLinkClass = (href) =>
+    `relative pb-1 transition-colors ${
+      isActive(href)
+        ? "text-green-700 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-green-600"
+        : "text-green-700 hover:text-sky-400"
+    }`;
+
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b shadow-sm">
       <div className="max-w-7xl mx-auto h-20 px-6 flex items-center justify-between">
 
-        <div className="relative h-76 w-56 flex items-center mt-7">
+        {/* ✅ Logo ab home page ka link hai */}
+        <Link href="/" className="relative h-76 w-56 flex items-center mt-7">
           <Image
             src="/car-Photoroom.png"
             alt="Car Trade Hub"
@@ -92,14 +106,14 @@ export default function Navbar() {
             className="object-contain"
             priority
           />
-        </div>
+        </Link>
 
         <div className="hidden md:flex gap-10 text-sm font-bold tracking-wide">
-          <Link href="/"      className="text-sky-400">HOME</Link>
-          <Link href="/cars"  className="text-green-700 hover:text-sky-400">CAR LISTING</Link>
-          <Link href="/about" className="text-green-700 hover:text-sky-400">ABOUT US</Link>
-          <Link href="/contact" className="text-green-700 hover:text-sky-400">CONTACT US</Link>
-          <Link href="/blogs"  className="text-green-700 hover:text-sky-400">BLOG</Link>
+          <Link href="/"        className={navLinkClass("/")}>HOME</Link>
+          <Link href="/cars"    className={navLinkClass("/cars")}>CAR LISTING</Link>
+          <Link href="/about"   className={navLinkClass("/about")}>ABOUT US</Link>
+          <Link href="/contact" className={navLinkClass("/contact")}>CONTACT US</Link>
+          <Link href="/blogs"   className={navLinkClass("/blogs")}>BLOG</Link>
         </div>
 
         <div className="hidden md:flex items-center gap-5">
@@ -113,9 +127,8 @@ export default function Navbar() {
 
           {user && !isAdmin && (
             <>
-              {/* ✅ Messages Icon with Unread Count */}
-              <Link 
-                href="/messages" 
+              <Link
+                href="/messages"
                 className="relative text-gray-700 hover:text-sky-400 transition"
                 title="Messages"
               >
@@ -126,11 +139,7 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              
-              <button className="text-gray-700 hover:text-sky-400">
-                <Bell size={22} />
-              </button>
-            
+
               <div className="relative">
                 <div
                   onClick={() => setUserMenu(!userMenu)}
@@ -168,16 +177,15 @@ export default function Navbar() {
                     </div>
 
                     <div className="py-2">
-                      {/* ✅ Messages with Unread Badge */}
-                      <MenuItem 
-                        icon={<MessageCircle size={16}/>}   
-                        text="Messages"          
+                      <MenuItem
+                        icon={<MessageCircle size={16}/>}
+                        text="Messages"
                         onClick={() => { router.push("/messages"); setUserMenu(false); }}
                         badge={unreadCount}
                       />
                       <MenuItem icon={<FileText size={16}/>}   text="My Ads"          onClick={() => { router.push("/dashboard/seller"); setUserMenu(false); }} />
                       <MenuItem icon={<Heart size={16}/>}      text="Favourites"       onClick={() => { router.push("/favourites"); setUserMenu(false); }} />
-                      <MenuItem icon={<FileText size={16}/>}   text="My Orders"        onClick={() => { router.push("/my-orders"); setUserMenu(false); }} />
+                      <MenuItem icon={<FileText size={16}/>}   text="My Bookings"        onClick={() => { router.push("/my-orders"); setUserMenu(false); }} />
                       <MenuItem icon={<CreditCard size={16}/>} text="Payment Options"  onClick={() => { router.push("/payment-options"); setUserMenu(false); }} />
                       <Divider />
                       <MenuItem icon={<BookOpen size={16}/>}   text="Blogs"            onClick={() => { router.push("/blogs"); setUserMenu(false); }} />
@@ -280,11 +288,11 @@ export default function Navbar() {
 
       {open && (
         <div className="md:hidden px-6 pb-4 space-y-4 bg-white/95 backdrop-blur-md">
-          <Link href="/"        className="block font-medium">Home</Link>
-          <Link href="/cars"    className="block font-medium">Car Listing</Link>
-          <Link href="/about"   className="block font-medium">About Us</Link>
-          <Link href="/contact" className="block font-medium">Contact Us</Link>
-          <Link href="/blog"    className="block font-medium">Blog</Link>
+          <Link href="/"        className={`block font-medium ${isActive("/") ? "text-green-700 underline decoration-2 underline-offset-4" : ""}`}>Home</Link>
+          <Link href="/cars"    className={`block font-medium ${isActive("/cars") ? "text-green-700 underline decoration-2 underline-offset-4" : ""}`}>Car Listing</Link>
+          <Link href="/about"   className={`block font-medium ${isActive("/about") ? "text-green-700 underline decoration-2 underline-offset-4" : ""}`}>About Us</Link>
+          <Link href="/contact" className={`block font-medium ${isActive("/contact") ? "text-green-700 underline decoration-2 underline-offset-4" : ""}`}>Contact Us</Link>
+          <Link href="/blogs"   className={`block font-medium ${isActive("/blogs") ? "text-green-700 underline decoration-2 underline-offset-4" : ""}`}>Blog</Link>
 
           {isAdmin ? (
             <div className="flex gap-3 pt-2">

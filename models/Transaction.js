@@ -6,6 +6,7 @@ const TransactionSchema = new mongoose.Schema(
     car: { type: mongoose.Schema.Types.ObjectId, ref: "Car" },
     amount: Number,
     status: {
+      
       type: String,
       enum: ["pending", "completed"],
       default: "pending",

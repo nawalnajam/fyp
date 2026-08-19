@@ -1,50 +1,135 @@
-// /models/User.js
-
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String, default: "" },
-    role: { type: String, enum: ["buyer", "seller", "admin"], default: "buyer" },
-        
-    // ✅ Payment Methods - Professional
-    paymentMethods: [{
-      id: { type: String }, // Stripe PaymentMethod ID
-      type: { 
-        type: String, 
-        enum: ["card", "jazzcash", "easypaisa", "bank"],
-        required: true 
+    // ==================== BASIC INFO ====================
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
+    },
+    password: {
+      type: String,
+      required: function () {
+        return !this.isGoogleUser; // Password not required for Google users
       },
-      last4: { type: String }, // Last 4 digits for card
-      brand: { type: String }, // Card brand (visa, mastercard, etc.)
-      accountNo: { type: String },
-      nameOnAccount: { type: String, default: "" },
-      isDefault: { type: Boolean, default: false },
-      createdAt: { type: Date, default: Date.now }
-    }],
-    
-    // Stripe Customer ID
-    stripeCustomerId: { type: String, default: "" },
-    
-    // ✅ Google OAuth fields
-    googleId: { type: String, sparse: true },
-    isGoogleUser: { type: Boolean, default: false },
-    avatar: { type: String, default: "" },
-    
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Car" }],
-    paymentMethods: [{
-      type: { type: String, enum: ["jazzcash", "easypaisa", "bank", "card"] },
-      accountNo: String,
-      isDefault: { type: Boolean, default: false }
-    }],
-    
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+      minlength: [6, "Password must be at least 6 characters"],
+    },
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // ==================== ROLE ====================
+    role: {
+      type: String,
+      enum: ["admin", "seller", "buyer"],
+      default: "buyer",
+      required: true,
+    },
+
+    // ==================== FAVOURITES ====================
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Car",
+      },
+    ],
+
+    // ==================== PAYMENT METHODS (Separate Collection) ====================
+    paymentMethods: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PaymentMethod",
+      },
+    ],
+
+    // ==================== STRIPE ====================
+    stripeCustomerId: {
+      type: String,
+      default: "",
+    },
+
+    // ==================== GOOGLE OAUTH ====================
+    googleId: {
+      type: String,
+      default: "",
+    },
+    isGoogleUser: {
+      type: Boolean,
+      default: false,
+    },
+
+    // ==================== PROFILE ====================
+    avatar: {
+      type: String,
+      default: "",
+    },
+
+    // ==================== TIMESTAMPS ====================
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
+// ==================== VIRTUAL: Get default payment method ====================
+UserSchema.virtual("defaultPaymentMethod", {
+  ref: "PaymentMethod",
+  localField: "_id",
+  foreignField: "user",
+  justOne: true,
+  options: { match: { isDefault: true } },
+});
+
+// ==================== VIRTUAL: Get all payment methods (populated) ====================
+UserSchema.virtual("allPaymentMethods", {
+  ref: "PaymentMethod",
+  localField: "_id",
+  foreignField: "user",
+});
+
+// ==================== INDEXES ====================
+UserSchema.index({ email: 1 });
+UserSchema.index({ role: 1 });
+UserSchema.index({ createdAt: -1 });
+
+// ==================== PRE-SAVE HOOK ====================
+UserSchema.pre("save", function (next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+// ==================== TO JSON TRANSFORM ====================
+UserSchema.set("toJSON", {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret.password;
+    delete ret.__v;
+    return ret;
+  },
+});
+
+UserSchema.set("toObject", {
+  virtuals: true,
+});
+
+// ==================== EXPORT ====================
 export default mongoose.models.User || mongoose.model("User", UserSchema);

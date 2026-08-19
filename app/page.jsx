@@ -8,7 +8,7 @@ import HeroSearch from "@/components/HeroSearch";
 import {
   Star, MapPin, Fuel, Settings2, ArrowRight, ChevronRight,
   Shield, Zap, HeartHandshake, Car, Users, TrendingUp, Eye,
-  Phone, Mail, Instagram, Facebook, Twitter, CheckCircle2, Heart, X, Loader2
+  Phone, Mail, Instagram, Facebook, Twitter, Youtube, CheckCircle2, Heart, X, Loader2
 } from "lucide-react";
 
 const STYLES = `
@@ -157,6 +157,232 @@ const STYLES = `
   @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
   .marquee-track { display:flex; width:max-content; animation:marquee 22s linear infinite; }
   .marquee-track:hover { animation-play-state:paused; }
+
+  /* ✅ Hero Slider Animations (only for images) */
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: scale(1.05); }
+    10% { opacity: 1; transform: scale(1); }
+    85% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.02); }
+  }
+  .hero-slide {
+    animation: fadeInOut 5s ease-in-out forwards;
+  }
+
+  /* ✅ Skyblue Background for Page Content */
+  .page-bg {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ✅ Moving Text Marquee INSIDE Why Choose Us */
+  .why-bg-marquee {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    white-space: nowrap;
+  }
+  .why-bg-marquee .why-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: whyMarquee 28s linear infinite;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: clamp(40px, 8vw, 80px);
+    letter-spacing: 0.1em;
+    color: #0f172a;
+    text-shadow: 0 0 30px rgba(14,165,233,0.2);
+  }
+  .why-bg-marquee .why-marquee-track span {
+    padding: 0 30px;
+    display: inline-block;
+  }
+  @keyframes whyMarquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @media (max-width: 768px) {
+    .why-bg-marquee .why-marquee-track {
+      font-size: 28px;
+    }
+  }
+
+  /* ✅ Footer with Wave Lines */
+  .site-footer {
+    position: relative;
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 60px 24px 24px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    overflow: hidden;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .footer-brand {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .footer-brand .dot {
+    color: #22c55e;
+  }
+
+  .footer-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    max-width: 300px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 12px;
+  }
+
+  .footer-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    color: #94a3b8;
+    transition: all .2s;
+  }
+
+  .footer-social a:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+  }
+
+  .footer-heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links li a {
+    color: #94a3b8;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color .2s;
+  }
+
+  .footer-links li a:hover {
+    color: #38bdf8;
+  }
+
+  .footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .footer-contact-item svg {
+    color: #0ea5e9;
+    flex-shrink: 0;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 22px;
+    font-size: 13px;
+    color: #475569;
+  }
+
+  .footer-bottom-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-bottom-links a {
+    color: #475569;
+    cursor: pointer;
+    transition: color .2s;
+  }
+
+  .footer-bottom-links a:hover {
+    color: #94a3b8;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .footer-desc {
+      max-width: 100%;
+    }
+  }
+
+  /* ✅ Wave lines background */
+  .footer-wave-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.12;
+  }
+
+  .footer-wave-bg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .footer-wave-bg .wave-line {
+    stroke: #22c55e;
+    stroke-width: 0.6;
+    transition: transform 0.1s ease;
+  }
 `;
 
 function setupReveal() {
@@ -302,6 +528,22 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [favouriteIds, setFavouriteIds] = useState(new Set());
+  
+  // Hero Banner Images
+  const heroImages = [
+    "/hero1.png",
+    "/hero2.png",
+    "/hero3.png",
+  ];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-slide every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -356,7 +598,66 @@ export default function Home() {
 
   const filters = ["all","Petrol","Diesel","Hybrid","Electric","CNG"];
   const filtered = filter === "all" ? all : all.filter(c => c.fuelType === filter);
-  const brands = ["Toyota","Honda","Suzuki","KIA","Hyundai","BMW","Mercedes","Audi","Nissan","MG","Toyota","Honda","Suzuki","KIA","Hyundai","BMW","Mercedes","Audi","Nissan","MG"];
+  const brands = ["Toyota","Honda","Suzuki","KIA","Hyundai","BMW","Mercedes","Audi","Nissan","Toyota","Honda","Suzuki","KIA","Hyundai","BMW","Mercedes","Audi","Nissan","MG"];
+
+  // ✅ Footer Wave Animation (useRef + useEffect)
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
+
+    const svg = footer.querySelector('.footer-wave-bg svg');
+    if (!svg) return;
+
+    const lines = svg.querySelectorAll('.wave-line');
+    if (!lines.length) return;
+
+    let mouseX = 0.5, mouseY = 0.5;
+
+    const updateLines = () => {
+      lines.forEach((line) => {
+        const baseY = parseFloat(line.getAttribute('data-base-y'));
+        const idx = parseInt(line.getAttribute('data-index'));
+        const offset = (idx / lines.length) * 2 - 1;
+        const wave = Math.sin(Date.now() / 2000 + idx * 0.5) * 3 + mouseX * 8 + offset * 4;
+        const dy = wave * (0.5 + mouseY * 0.5);
+        line.setAttribute('transform', `translate(0, ${dy})`);
+      });
+      requestAnimationFrame(updateLines);
+    };
+
+    const handleMouseMove = (e) => {
+      const rect = footer.getBoundingClientRect();
+      mouseX = (e.clientX - rect.left) / rect.width;
+      mouseY = (e.clientY - rect.top) / rect.height;
+    };
+
+    footer.addEventListener('mousemove', handleMouseMove);
+    updateLines();
+
+    return () => {
+      footer.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  // ✅ Video hover play/pause
+  const [isVideoHovering, setIsVideoHovering] = useState(false);
+  const videoRef = useRef(null);
+
+  const handleVideoHover = () => {
+    setIsVideoHovering(true);
+    if (videoRef.current) {
+      videoRef.current.play().catch((e) => console.log("Play error:", e));
+    }
+  };
+
+  const handleVideoLeave = () => {
+    setIsVideoHovering(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
 
   return (
     <>
@@ -365,13 +666,40 @@ export default function Home() {
         <Navbar />
 
         {/* HERO SECTION */}
-        <section className="relative w-full h-[100vh] overflow-hidden">
-        <img
-  src="/signin.png"
-  alt="Hero Cars"
-  className="absolute inset-0 w-full h-full object-cover"
-/>
-          <div className="absolute inset-0 bg-black/35 backdrop-blur-[2px]" />
+        <section className="relative w-full h-[100vh]">
+          
+          {/* Sliding Background Images */}
+          <div className="absolute inset-0 w-full h-full">
+            {heroImages.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`Hero ${index + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  index === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50 backdrop-blur-[1px]" />
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImageIndex(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  index === currentImageIndex
+                    ? "w-8 h-2.5 bg-white"
+                    : "w-2.5 h-2.5 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Content */}
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 -translate-y-16 lg:-translate-y-20">
             <h1 className="font-extrabold leading-tight flex flex-col items-center">
               <span className="text-4xl md:text-5xl lg:text-6xl bg-gradient-to-r from-sky-400 via-emerald-400 to-green-700 bg-clip-text text-transparent">
@@ -384,6 +712,8 @@ export default function Home() {
             </p>
             <HeroSearch />
           </div>
+
+          {/* Scroll Indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 z-10">
             <span className="text-white/35 tracking-widest" style={{fontSize:"10px",textTransform:"uppercase"}}>Scroll</span>
             <div className="w-5 h-8 rounded-full border border-white/25 flex items-start justify-center pt-1.5">
@@ -392,287 +722,324 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CONTENT */}
-        <div>
+        {/* CONTENT AREA WITH SKYBLUE BACKGROUND */}
+        <div className="page-bg">
+          <div className="relative z-10">
+            {/* STATS BAR */}
+            <div className="glass-panel">
+              <div className="max-w-6xl mx-auto px-6 py-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  {[
+                    {v:"10,000+", l:"Cars Listed",    Icon:Car},
+                    {v:"5,000+",  l:"Happy Buyers",   Icon:Users},
+                    {v:"50+",     l:"Cities Covered", Icon:MapPin},
+                    {v:"25,000+", l:"Daily Visitors", Icon:TrendingUp},
+                  ].map(({v,l,Icon},i)=>(
+                    <div key={l} data-anim="fade-up" data-delay={String(i)} className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{background:"linear-gradient(135deg,rgba(14,165,233,.12),rgba(34,197,94,.12))"}}>
+                        <Icon size={22} style={{color:"#0ea5e9"}}/>
+                      </div>
+                      <div>
+                        <p className="snum">{v}</p>
+                        <p style={{color:"#64748b",fontSize:"12px",fontWeight:600}}>{l}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* 🎬 VIDEO SECTION - Hover to Play */}
+            <section className="py-16 px-6">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-8">
+                  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-sky-500/10 to-emerald-500/10 text-sky-600 text-sm font-semibold mb-3">
+                    🎬 Watch Our Story
+                  </span>
+                  <h2 className="hph text-3xl md:text-4xl font-bold text-gray-800">
+                    Experience the <span className="text-sky-600">Future of Car Trading</span>
+                  </h2>
+                  <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
+                    Hover on the video to play • Move out to pause
+                  </p>
+                </div>
+                
+                <div 
+                  className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-gray-900"
+                  onMouseEnter={handleVideoHover}
+                  onMouseLeave={handleVideoLeave}
+                >
+                  <video
+                    ref={videoRef}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    playsInline
+                    preload="metadata"
+                    poster="/promo.png"
+                  >
+                    <source src="/homevideo.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  
+                  {/* Play Icon Overlay - fades out on hover */}
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300"
+                    style={{ opacity: isVideoHovering ? 0 : 1 }}
+                  >
+                    <div className="play-icon w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-xl transition-all duration-300">
+                      <svg className="w-10 h-10 text-sky-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-center text-gray-500 text-sm mt-4">
+                  🖱️ Hover on video to play • 1:30 min
+                </p>
+              </div>
+            </section>
 
-          {/* STATS BAR */}
-          <div className="glass-panel">
-            <div className="max-w-6xl mx-auto px-6 py-10">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {[
-                  {v:"10,000+", l:"Cars Listed",    Icon:Car},
-                  {v:"5,000+",  l:"Happy Buyers",   Icon:Users},
-                  {v:"50+",     l:"Cities Covered", Icon:MapPin},
-                  {v:"25,000+", l:"Daily Visitors", Icon:TrendingUp},
-                ].map(({v,l,Icon},i)=>(
-                  <div key={l} data-anim="fade-up" data-delay={String(i)} className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{background:"linear-gradient(135deg,rgba(14,165,233,.12),rgba(34,197,94,.12))"}}>
-                      <Icon size={22} style={{color:"#0ea5e9"}}/>
-                    </div>
-                    <div>
-                      <p className="snum">{v}</p>
-                      <p style={{color:"#64748b",fontSize:"12px",fontWeight:600}}>{l}</p>
-                    </div>
+            {/* BRAND MARQUEE */}
+            <div style={{overflow:"hidden",padding:"20px 0",borderBottom:"1px solid rgba(14,165,233,.08)"}}>
+              <div className="marquee-track">
+                {brands.map((b,i)=>(
+                  <div key={i} style={{
+                    display:"inline-flex", alignItems:"center", gap:"8px",
+                    padding:"8px 28px", marginRight:"8px",
+                    background:"rgba(255,255,255,.65)", borderRadius:"99px",
+                    border:"1px solid rgba(14,165,233,.12)", backdropFilter:"blur(6px)",
+                    fontSize:"13px", fontWeight:700, color:"#475569", whiteSpace:"nowrap"
+                  }}>
+                    <Car size={9} style={{color:"#0ea5e9"}}/> {b}
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-         
-                {/* 🎬 VIDEO SECTION - Full featured */}
-<section className="py-16 px-6">
-  <div className="max-w-5xl mx-auto">
-    <div className="text-center mb-8">
-      <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-sky-500/10 to-emerald-500/10 text-sky-600 text-sm font-semibold mb-3">
-        🎬 Watch Our Story
-      </span>
-      <h2 className="hph text-3xl md:text-4xl font-bold text-gray-800">
-        Experience the <span className="text-sky-600">Future of Car Trading</span>
-      </h2>
-      <p className="text-gray-500 mt-2 max-w-2xl mx-auto">
-        Tap the video to see how Car Trade Hub works
-      </p>
-    </div>
-    
-    <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-gray-900">
-      <video
-        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-        playsInline
-        preload="metadata"
-        poster="/promo.png"
-        onClick={(e) => {
-          const video = e.currentTarget;
-          if (video.paused) {
-            video.play();
-          } else {
-            video.pause();
-          }
-        }}
-      >
-        <source src="/homevideo.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      
-      {/* Floating play button that fades on play */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="play-icon w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-xl transition-all duration-300">
-          <svg className="w-10 h-10 text-sky-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-      </div>
-    </div>
-    
-    <p className="text-center text-gray-500 text-sm mt-4">
-       Tap anywhere on video to play/pause • 1:30 min
-    </p>
-  </div>
-</section>
-          {/* BRAND MARQUEE */}
-          <div style={{overflow:"hidden",padding:"20px 0",borderBottom:"1px solid rgba(14,165,233,.08)"}}>
-            <div className="marquee-track">
-              {brands.map((b,i)=>(
-                <div key={i} style={{
-                  display:"inline-flex", alignItems:"center", gap:"8px",
-                  padding:"8px 28px", marginRight:"8px",
-                  background:"rgba(255,255,255,.65)", borderRadius:"99px",
-                  border:"1px solid rgba(14,165,233,.12)", backdropFilter:"blur(6px)",
-                  fontSize:"13px", fontWeight:700, color:"#475569", whiteSpace:"nowrap"
-                }}>
-                  <Car size={9} style={{color:"#0ea5e9"}}/> {b}
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* FEATURED CARS */}
-          {(loading || featured.length > 0) && (
-            <section className="dot-bg" style={{padding:"80px 0"}}>
-              <div className="max-w-7xl mx-auto px-6">
-                <div data-anim="fade-up" data-delay="0" style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:"16px",marginBottom:"48px"}}>
-                  <div>
-                    <span className="slabel"><Star size={11} style={{fill:"currentColor"}}/> Featured</span>
-                    <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a",margin:0}}>Top Featured Cars</h2>
-                    <p style={{color:"#64748b",fontSize:"14px",marginTop:"6px"}}>Handpicked premium listings — admin & seller verified</p>
+            {/* FEATURED CARS */}
+            {(loading || featured.length > 0) && (
+              <section className="dot-bg" style={{padding:"80px 0"}}>
+                <div className="max-w-7xl mx-auto px-6">
+                  <div data-anim="fade-up" data-delay="0" style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:"16px",marginBottom:"48px"}}>
+                    <div>
+                      <span className="slabel"><Star size={11} style={{fill:"currentColor"}}/> Featured</span>
+                      <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a",margin:0}}>Top Featured Cars</h2>
+                      <p style={{color:"#64748b",fontSize:"14px",marginTop:"6px"}}>Handpicked premium listings — admin & seller verified</p>
+                    </div>
+                    <button onClick={()=>document.getElementById("listings")?.scrollIntoView({behavior:"smooth"})} style={{display:"inline-flex",alignItems:"center",gap:"4px",fontSize:"14px",fontWeight:700,color:"#0284c7",background:"none",border:"none",cursor:"pointer"}}>
+                      See all <ChevronRight size={15}/>
+                    </button>
                   </div>
-                  <button onClick={()=>document.getElementById("listings")?.scrollIntoView({behavior:"smooth"})} style={{display:"inline-flex",alignItems:"center",gap:"4px",fontSize:"14px",fontWeight:700,color:"#0284c7",background:"none",border:"none",cursor:"pointer"}}>
-                    See all <ChevronRight size={15}/>
-                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                    {loading ? [1,2,3].map(i=><div key={i} className="skel" style={{height:"300px"}}/>)
+                      : featured.map((car,i)=>(
+                        <div key={car._id} data-anim="fade-up" data-delay={String(i % 4)}>
+                          <CarCard car={car} featured={true} router={router} isFavourite={favouriteIds.has(car._id)} onFavouriteToggle={updateFavouriteStatus} />
+                        </div>
+                      ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-                  {loading ? [1,2,3].map(i=><div key={i} className="skel" style={{height:"300px"}}/>)
-                    : featured.map((car,i)=>(
-                      <div key={car._id} data-anim="fade-up" data-delay={String(i % 4)}>
-                        <CarCard car={car} featured={true} router={router} isFavourite={favouriteIds.has(car._id)} onFavouriteToggle={updateFavouriteStatus} />
-                      </div>
-                    ))}
+              </section>
+            )}
+
+            {/* WHY CHOOSE US - WITH MOVING MARQUEE INSIDE */}
+            <WhyChooseUs />
+
+            {/* HOW IT WORKS */}
+            <section className="dot-bg" style={{padding:"80px 0"}}>
+              <div className="max-w-6xl mx-auto px-6">
+                <div className="text-center" style={{marginBottom:"56px"}}>
+                  <div data-anim="fade-up" data-delay="0">
+                    <span className="slabel">Simple Process</span>
+                    <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a"}}>How It Works</h2>
+                    <p style={{color:"#64748b",marginTop:"10px",fontSize:"14px"}}>Buy or sell — just a few easy steps</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div>
+                    <div data-anim="fade-left" data-delay="0">
+                      <p className="slabel" style={{marginBottom:"20px"}}>For Buyers</p>
+                    </div>
+                    <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+                      {[
+                        {n:"01",t:"Browse & Search",  d:"Find your dream car using AI search or filters — by make, city, or fuel type."},
+                        {n:"02",t:"View Full Details", d:"Check complete specifications, multiple photos, price, and seller contact."},
+                        {n:"03",t:"Book Test Drive",   d:"Book a test drive directly from the car page — choose your preferred date and time."},
+                      ].map(({n,t,d},i)=>(
+                        <div key={n} data-anim="fade-left" data-delay={String(i+1)} className="step">
+                          <div className="hph" style={{width:"40px",height:"40px",borderRadius:"12px",background:"linear-gradient(135deg,#0ea5e9,#22c55e)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px",fontWeight:700,color:"#fff",flexShrink:0,minWidth:"40px"}}>{n}</div>
+                          <div>
+                            <p className="hph" style={{fontWeight:700,color:"#0f172a",fontSize:"14px",marginBottom:"4px"}}>{t}</p>
+                            <p style={{color:"#64748b",fontSize:"13px",lineHeight:"1.6"}}>{d}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div data-anim="fade-right" data-delay="0">
+                      <p className="slabel" style={{marginBottom:"20px"}}>For Sellers</p>
+                    </div>
+                    <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+                      {[
+                        {n:"01",t:"Sign Up & Upload",  d:"Create a free account and upload car photos — AI will auto-fill all details."},
+                        {n:"02",t:"Admin Review",       d:"Your listing gets reviewed and approved within a few hours."},
+                        {n:"03",t:"Get Real Buyers",    d:"Receive booking requests, schedule test drives, and close the deal."},
+                      ].map(({n,t,d},i)=>(
+                        <div key={n} data-anim="fade-right" data-delay={String(i+1)} className="step">
+                          <div className="hph" style={{width:"40px",height:"40px",borderRadius:"12px",background:"linear-gradient(135deg,#22c55e,#0ea5e9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px",fontWeight:700,color:"#fff",flexShrink:0,minWidth:"40px"}}>{n}</div>
+                          <div>
+                            <p className="hph" style={{fontWeight:700,color:"#0f172a",fontSize:"14px",marginBottom:"4px"}}>{t}</p>
+                            <p style={{color:"#64748b",fontSize:"13px",lineHeight:"1.6"}}>{d}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
-          )}
 
-          {/* WHY CHOOSE US */}
-          <WhyChooseUs />
-
-          {/* HOW IT WORKS */}
-          <section className="dot-bg" style={{padding:"80px 0"}}>
-            <div className="max-w-6xl mx-auto px-6">
-              <div className="text-center" style={{marginBottom:"56px"}}>
-                <div data-anim="fade-up" data-delay="0">
-                  <span className="slabel">Simple Process</span>
-                  <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a"}}>How It Works</h2>
-                  <p style={{color:"#64748b",marginTop:"10px",fontSize:"14px"}}>Buy or sell — just a few easy steps</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div>
-                  <div data-anim="fade-left" data-delay="0">
-                    <p className="slabel" style={{marginBottom:"20px"}}>For Buyers</p>
+            {/* ALL LISTINGS */}
+            <section id="listings" className="glass-panel">
+              <div className="max-w-7xl mx-auto px-6 py-20">
+                <div data-anim="fade-up" data-delay="0" style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:"20px",marginBottom:"36px"}}>
+                  <div>
+                    <span className="slabel"><Car size={11}/> All Cars</span>
+                    <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a"}}>Latest Listings</h2>
+                    {!loading && <p style={{color:"#64748b",fontSize:"14px",marginTop:"4px"}}>{all.length} cars available right now</p>}
                   </div>
-                  <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
-                    {[
-                      {n:"01",t:"Browse & Search",  d:"Find your dream car using AI search or filters — by make, city, or fuel type."},
-                      {n:"02",t:"View Full Details", d:"Check complete specifications, multiple photos, price, and seller contact."},
-                      {n:"03",t:"Book Test Drive",   d:"Book a test drive directly from the car page — choose your preferred date and time."},
-                    ].map(({n,t,d},i)=>(
-                      <div key={n} data-anim="fade-left" data-delay={String(i+1)} className="step">
-                        <div className="hph" style={{width:"40px",height:"40px",borderRadius:"12px",background:"linear-gradient(135deg,#0ea5e9,#22c55e)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px",fontWeight:700,color:"#fff",flexShrink:0,minWidth:"40px"}}>{n}</div>
-                        <div>
-                          <p className="hph" style={{fontWeight:700,color:"#0f172a",fontSize:"14px",marginBottom:"4px"}}>{t}</p>
-                          <p style={{color:"#64748b",fontSize:"13px",lineHeight:"1.6"}}>{d}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div data-anim="fade-right" data-delay="0">
-                    <p className="slabel" style={{marginBottom:"20px"}}>For Sellers</p>
-                  </div>
-                  <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
-                    {[
-                      {n:"01",t:"Sign Up & Upload",  d:"Create a free account and upload car photos — AI will auto-fill all details."},
-                      {n:"02",t:"Admin Review",       d:"Your listing gets reviewed and approved within a few hours."},
-                      {n:"03",t:"Get Real Buyers",    d:"Receive booking requests, schedule test drives, and close the deal."},
-                    ].map(({n,t,d},i)=>(
-                      <div key={n} data-anim="fade-right" data-delay={String(i+1)} className="step">
-                        <div className="hph" style={{width:"40px",height:"40px",borderRadius:"12px",background:"linear-gradient(135deg,#22c55e,#0ea5e9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px",fontWeight:700,color:"#fff",flexShrink:0,minWidth:"40px"}}>{n}</div>
-                        <div>
-                          <p className="hph" style={{fontWeight:700,color:"#0f172a",fontSize:"14px",marginBottom:"4px"}}>{t}</p>
-                          <p style={{color:"#64748b",fontSize:"13px",lineHeight:"1.6"}}>{d}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ALL LISTINGS */}
-          <section id="listings" className="glass-panel">
-            <div className="max-w-7xl mx-auto px-6 py-20">
-              <div data-anim="fade-up" data-delay="0" style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:"20px",marginBottom:"36px"}}>
-                <div>
-                  <span className="slabel"><Car size={11}/> All Cars</span>
-                  <h2 className="hph" style={{fontSize:"clamp(26px,4vw,36px)",fontWeight:800,color:"#0f172a"}}>Latest Listings</h2>
-                  {!loading && <p style={{color:"#64748b",fontSize:"14px",marginTop:"4px"}}>{all.length} cars available right now</p>}
-                </div>
-                <div data-anim="fade-up" data-delay="1" style={{display:"flex",flexWrap:"wrap",gap:"8px"}}>
-                  {filters.map(f=>(
-                    <button key={f} onClick={()=>setFilter(f)} className={`fpill${filter===f?" act":""}`}>
-                      {f==="all"?"All Types":f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {[1,2,3,4,5,6,7,8].map(i=><div key={i} className="skel" style={{height:"260px"}}/>)}
-                </div>
-              ) : filtered.length === 0 ? (
-                <div style={{padding:"80px 0",textAlign:"center"}}>
-                  <Car size={52} style={{color:"#cbd5e1",margin:"0 auto 16px"}}/>
-                  <p style={{color:"#64748b",fontSize:"18px",fontWeight:600}}>No cars found</p>
-                  <p style={{color:"#94a3b8",fontSize:"14px",marginTop:"4px"}}>Try a different filter</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {filtered.map((car,i)=>(
-                    <div key={car._id} data-anim="fade-up" data-delay={String(i % 6)}>
-                      <CarCard car={car} router={router} isFavourite={favouriteIds.has(car._id)} onFavouriteToggle={updateFavouriteStatus} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* CTA BANNER */}
-          <section style={{background:"linear-gradient(135deg,#0369a1,#0284c7)", padding:"80px 24px", textAlign:"center", position:"relative", overflow:"hidden"}}>
-            <div style={{position:"absolute",top:"-60px",right:"-60px",width:"300px",height:"300px",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,.08),transparent)",filter:"blur(44px)",pointerEvents:"none"}}/>
-            <div style={{position:"absolute",bottom:"-50px",left:"-50px",width:"240px",height:"240px",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,.06),transparent)",filter:"blur(36px)",pointerEvents:"none"}}/>
-            <div style={{position:"relative",zIndex:1,maxWidth:"700px",margin:"0 auto"}}>
-              <span className="slabel" style={{color:"#bbf7d0",borderColor:"rgba(187,247,208,.3)",background:"rgba(255,255,255,.1)"}}>Get Started</span>
-              <h2 className="hph" style={{fontSize:"clamp(28px,5vw,50px)",fontWeight:800,color:"#fff",margin:"10px 0 14px"}}>Ready to Sell Your Car?</h2>
-              <p style={{color:"rgba(255,255,255,.7)",fontSize:"15px",maxWidth:"420px",margin:"0 auto 32px"}}>List for free — AI fills the details, admin verifies, buyers will come to you.</p>
-              <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"16px"}}>
-                <button onClick={()=>router.push("/sell/add-car")} className="bprimary">List Your Car — Free <ChevronRight size={16}/></button>
-                <button onClick={()=>router.push("/signup")} className="bghost">Create Account</button>
-              </div>
-            </div>
-          </section>
-
-          {/* FOOTER */}
-          <footer style={{background:"#0f172a",borderTop:"1px solid rgba(255,255,255,.07)"}}>
-            <div className="max-w-6xl mx-auto px-6">
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:"40px",padding:"64px 0 40px",borderBottom:"1px solid rgba(255,255,255,.08)"}}>
-                <div data-anim="fade-up" data-delay="0">
-                  <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"16px"}}>
-                    <div style={{width:"40px",height:"40px",borderRadius:"12px",background:"linear-gradient(135deg,#0ea5e9,#22c55e)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Car size={19} style={{color:"#fff"}}/></div>
-                    <span className="hph" style={{fontWeight:800,color:"#fff",fontSize:"18px"}}>Car Trade Hub</span>
-                  </div>
-                  <p style={{color:"#94a3b8",fontSize:"14px",lineHeight:"1.7",marginBottom:"20px"}}>Pakistan's trusted car marketplace. Buy, sell and discover cars with AI-powered tools.</p>
-                  <div style={{display:"flex",gap:"10px"}}>
-                    {[Facebook,Instagram,Twitter].map((Icon,i)=>(
-                      <button key={i} style={{width:"36px",height:"36px",borderRadius:"10px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .2s"}} onMouseEnter={e=>e.currentTarget.style.borderColor="#38bdf8"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,.1)"}>
-                        <Icon size={15} style={{color:"#94a3b8"}}/>
+                  <div data-anim="fade-up" data-delay="1" style={{display:"flex",flexWrap:"wrap",gap:"8px"}}>
+                    {filters.map(f=>(
+                      <button key={f} onClick={()=>setFilter(f)} className={`fpill${filter===f?" act":""}`}>
+                        {f==="all"?"All Types":f}
                       </button>
                     ))}
                   </div>
                 </div>
-                <div data-anim="fade-up" data-delay="1">
-                  <p className="hph" style={{fontSize:"11px",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",color:"#fff",marginBottom:"18px"}}>Quick Links</p>
-                  {["Home","Browse Cars","Sell Your Car","Test Drives","Sign In","Sign Up"].map(l=><a key={l} href="#" className="fl">{l}</a>)}
-                </div>
-                <div data-anim="fade-up" data-delay="2">
-                  <p className="hph" style={{fontSize:"11px",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",color:"#fff",marginBottom:"18px"}}>Browse By</p>
-                  {["Petrol Cars","Diesel Cars","Hybrid Cars","Electric Cars","CNG Cars","Featured Cars"].map(l=><a key={l} href="#" className="fl">{l}</a>)}
-                </div>
-                <div data-anim="fade-up" data-delay="3">
-                  <p className="hph" style={{fontSize:"11px",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",color:"#fff",marginBottom:"18px"}}>Contact Us</p>
-                  <div style={{display:"flex",flexDirection:"column",gap:"14px"}}>
-                    {[
-                      {Icon:Mail, color:"#0ea5e9",bg:"rgba(14,165,233,.1)", text:"support@cartradehub.pk"},
-                      {Icon:Phone, color:"#22c55e",bg:"rgba(34,197,94,.1)", text:"+92 300 1234567"},
-                      {Icon:MapPin, color:"#8b5cf6",bg:"rgba(139,92,246,.1)", text:"Lahore, Pakistan"},
-                    ].map(({Icon,color,bg,text})=>(
-                      <div key={text} style={{display:"flex",alignItems:"center",gap:"12px"}}>
-                        <div style={{width:"34px",height:"34px",borderRadius:"10px",background:bg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Icon size={14} style={{color}}/></div>
-                        <span style={{color:"#94a3b8",fontSize:"14px"}}>{text}</span>
+                {loading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {[1,2,3,4,5,6,7,8].map(i=><div key={i} className="skel" style={{height:"260px"}}/>)}
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div style={{padding:"80px 0",textAlign:"center"}}>
+                    <Car size={52} style={{color:"#cbd5e1",margin:"0 auto 16px"}}/>
+                    <p style={{color:"#64748b",fontSize:"18px",fontWeight:600}}>No cars found</p>
+                    <p style={{color:"#94a3b8",fontSize:"14px",marginTop:"4px"}}>Try a different filter</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {filtered.map((car,i)=>(
+                      <div key={car._id} data-anim="fade-up" data-delay={String(i % 6)}>
+                        <CarCard car={car} router={router} isFavourite={favouriteIds.has(car._id)} onFavouriteToggle={updateFavouriteStatus} />
                       </div>
                     ))}
                   </div>
+                )}
+              </div>
+            </section>
+
+            {/* CTA BANNER */}
+            <section style={{background:"linear-gradient(135deg,#0369a1,#0284c7)", padding:"80px 24px", textAlign:"center", position:"relative", overflow:"hidden"}}>
+              <div style={{position:"absolute",top:"-60px",right:"-60px",width:"300px",height:"300px",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,.08),transparent)",filter:"blur(44px)",pointerEvents:"none"}}/>
+              <div style={{position:"absolute",bottom:"-50px",left:"-50px",width:"240px",height:"240px",borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,.06),transparent)",filter:"blur(36px)",pointerEvents:"none"}}/>
+              <div style={{position:"relative",zIndex:1,maxWidth:"700px",margin:"0 auto"}}>
+                <span className="slabel" style={{color:"#bbf7d0",borderColor:"rgba(187,247,208,.3)",background:"rgba(255,255,255,.1)"}}>Get Started</span>
+                <h2 className="hph" style={{fontSize:"clamp(28px,5vw,50px)",fontWeight:800,color:"#fff",margin:"10px 0 14px"}}>Ready to Sell Your Car?</h2>
+                <p style={{color:"rgba(255,255,255,.7)",fontSize:"15px",maxWidth:"420px",margin:"0 auto 32px"}}>List for free — AI fills the details, admin verifies, buyers will come to you.</p>
+                <div style={{display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"16px"}}>
+                  <button onClick={()=>router.push("/sell/add-car")} className="bprimary">List Your Car — Free <ChevronRight size={16}/></button>
+                  <button onClick={()=>router.push("/signup")} className="bghost">Create Account</button>
                 </div>
               </div>
-              <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"space-between",gap:"16px",padding:"22px 0"}}>
-                <p style={{color:"#475569",fontSize:"14px"}}>© 2025 Car Trade Hub. All rights reserved.</p>
-                <div style={{display:"flex",gap:"24px"}}>
-                  {["Privacy Policy","Terms of Service","Cookie Policy"].map(l=><a key={l} href="#" className="fl" style={{fontSize:"12px",marginBottom:0}}>{l}</a>)}
+            </section>
+
+            {/* ✅ FOOTER WITH YOUR DESIGN + 10 WAVE LINES + ALL WORKING LINKS */}
+            <footer ref={footerRef} className="site-footer">
+              {/* Wave lines background (10 horizontal thin lines) */}
+              <div className="footer-wave-bg">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                  {Array.from({ length: 10 }).map((_, i) => {
+                    const y = (i / 9) * 100;
+                    return (
+                      <line
+                        key={i}
+                        x1="0"
+                        y1={y}
+                        x2="100"
+                        y2={y}
+                        className="wave-line"
+                        data-index={i}
+                        data-base-y={y}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="footer-inner">
+                <div className="footer-grid">
+                  <div>
+                    <div className="footer-brand">CarTradeHub<span className="dot">.</span></div>
+                    <p className="footer-desc">
+                      Pakistan's trusted car marketplace. Every listing is checked for accuracy so buyers and sellers can deal with confidence.
+                    </p>
+                    <div className="footer-social">
+                      <a href="#" onClick={(e) => { e.preventDefault(); window.open('https://facebook.com', '_blank'); }} aria-label="Facebook"><Facebook size={15} /></a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); window.open('https://instagram.com', '_blank'); }} aria-label="Instagram"><Instagram size={15} /></a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); window.open('https://twitter.com', '_blank'); }} aria-label="Twitter"><Twitter size={15} /></a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); window.open('https://youtube.com', '_blank'); }} aria-label="YouTube"><Youtube size={15} /></a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="footer-heading">Explore</div>
+                    <ul className="footer-links">
+                      <li><a onClick={() => router.push("/")}>Homepage</a></li>
+                      <li><a onClick={() => router.push("/cars")}>Browse Cars</a></li>
+                      <li><a onClick={() => router.push("/cars?bodyType=SUV")}>SUVs</a></li>
+                      <li><a onClick={() => router.push("/cars?bodyType=Sedan")}>Sedans</a></li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <div className="footer-heading">Support</div>
+                    <ul className="footer-links">
+                      <li><a onClick={() => router.push("/help")}>Help Center</a></li>
+                      <li><a onClick={() => router.push("/how-it-works")}>How Buying Works</a></li>
+                      <li><a onClick={() => router.push("/how-it-works")}>How Selling Works</a></li>
+                      <li><a onClick={() => router.push("/privacy")}>Terms & Privacy</a></li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <div className="footer-heading">Get in Touch</div>
+                    <div className="footer-contact-item">
+                      <Phone size={15} />
+                      <span>+92 300 1234567</span>
+                    </div>
+                    <div className="footer-contact-item">
+                      <Mail size={15} />
+                      <span>support@cartradehub.pk</span>
+                    </div>
+                    <div className="footer-contact-item">
+                      <MapPin size={15} />
+                      <span>Blue Area, Islamabad, Pakistan</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="footer-bottom">
+                  <span>© {new Date().getFullYear()} CarTradeHub. All rights reserved.</span>
+                  <div className="footer-bottom-links">
+                    <a onClick={() => router.push("/privacy")}>Privacy Policy</a>
+                    <a onClick={() => router.push("/terms")}>Terms of Service</a>
+                    <a onClick={() => router.push("/sitemap")}>Sitemap</a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </footer>
+            </footer>
+
+          </div>
         </div>
       </div>
     </>
@@ -713,7 +1080,6 @@ function WhyChooseUs() {
           position: relative;
           overflow: hidden;
         }
-        
         .why-wrap::before {
           content: '';
           position: absolute;
@@ -728,7 +1094,6 @@ function WhyChooseUs() {
           transform-origin: bottom center;
           transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .car-3d.go {
           transform: translateZ(320px) translateY(-20px) scale(1.25);
           opacity: 1;
@@ -794,7 +1159,6 @@ function WhyChooseUs() {
             font-size: 24px;
           }
         }
-        
         @media (max-width: 640px) {
           .why-wrap {
             height: 260px !important;
@@ -813,10 +1177,40 @@ function WhyChooseUs() {
       `}</style>
 
       <section ref={sectionRef} className="py-12 md:py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto relative">
           
-          {/* Section Header - ✅ FIXED: <h> → <h2> */}
-          <div className="text-center mb-8 md:mb-12">
+          {/* MOVING MARQUEE INSIDE WHY CHOOSE US */}
+          <div className="why-bg-marquee">
+            <div className="why-marquee-track">
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>🚗 CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+              <span>CarTradeHub</span>
+              <span>✦ CarTradeHub ✦</span>
+            </div>
+          </div>
+
+          {/* Section Header */}
+          <div className="text-center mb-8 md:mb-12 relative z-10">
             <p className="text-xs md:text-sm font-semibold tracking-wider text-sky-600 uppercase mb-2 md:mb-3">
               ✨ Why Choose Us
             </p>
@@ -829,7 +1223,7 @@ function WhyChooseUs() {
           </div>
 
           {/* 3D Car Stage */}
-          <div className="why-wrap mb-8 md:mb-12" style={{
+          <div className="why-wrap mb-8 md:mb-12 relative z-10" style={{
             position: "relative",
             height: "min(420px, 60vw)",
             display: "flex",
@@ -911,7 +1305,7 @@ function WhyChooseUs() {
           </div>
 
           {/* Feature Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 relative z-10">
             {[
               {
                 title: "Best Prices",

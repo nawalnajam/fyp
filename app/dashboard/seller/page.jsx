@@ -8,13 +8,17 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
-// Aqua Theme Colors
-const COLORS = ["#00bcd4", "#0097a7", "#4dd0e1", "#80deea", "#26c6da"];
+// ✅ Theme Colors — Green = Active, Light Blue = Pending, Slate = Sold
+const STATUS_COLORS = {
+  active:  "#22c55e", // green
+  pending: "#38bdf8", // light blue
+  sold:    "#94a3b8", // neutral slate
+};
 
 const STATUS_CONFIG = {
-  approved: { label: "Approved", color: "#4caf50", bg: "rgba(76,175,80,0.15)", icon: CheckCircle },
-  pending:  { label: "Pending",  color: "#ff9800", bg: "rgba(255,152,0,0.15)", icon: AlertCircle },
-  sold:     { label: "Sold",     color: "#9e9e9e", bg: "rgba(158,158,158,0.15)", icon: XCircle },
+  approved: { label: "Approved", color: "#22c55e", bg: "rgba(34,197,94,0.15)",  icon: CheckCircle },
+  pending:  { label: "Pending",  color: "#38bdf8", bg: "rgba(56,189,248,0.15)", icon: AlertCircle },
+  sold:     { label: "Sold",     color: "#94a3b8", bg: "rgba(148,163,184,0.15)", icon: XCircle },
 };
 
 export default function MyAdsPage() {
@@ -136,11 +140,12 @@ export default function MyAdsPage() {
   const nextImage = () => setCurrentIndex((p) => (p === activeImages.length - 1 ? 0 : p + 1));
   const prevImage = () => setCurrentIndex((p) => (p === 0 ? activeImages.length - 1 : p - 1));
 
-  const pieData = analytics
+  // ✅ Pie data + matching legend, in a single source of truth so chart & legend never drift apart
+  const pieSegments = analytics
     ? [
-        { name: "Active Ads",  value: analytics.activeAds },
-        { name: "Sold Ads",    value: analytics.soldAds },
-        { name: "Pending Ads", value: analytics.totalAds - analytics.activeAds - analytics.soldAds },
+        { key: "active",  name: "Active Ads",  value: analytics.activeAds, color: STATUS_COLORS.active },
+        { key: "pending", name: "Pending Ads", value: analytics.totalAds - analytics.activeAds - analytics.soldAds, color: STATUS_COLORS.pending },
+        { key: "sold",    name: "Sold Ads",    value: analytics.soldAds, color: STATUS_COLORS.sold },
       ]
     : [];
 
@@ -161,12 +166,12 @@ export default function MyAdsPage() {
             variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
           >
             {[
-              { title: "Total Ads",   value: analytics.totalAds,        icon: Car },
-              { title: "Active Ads",  value: analytics.activeAds,       icon: CheckCircle },
-              { title: "Total Views", value: analytics.totalViews,      icon: Eye },
-              { title: "Test Drives", value: analytics.totalTestDrives, icon: TrendingUp },
+              { title: "Total Ads",   value: analytics.totalAds,        icon: Car,          color: "#38bdf8" }, // sky blue
+              { title: "Active Ads",  value: analytics.activeAds,       icon: CheckCircle,  color: "#15803d" }, // green-700 (matches navbar)
+              { title: "Total Views", value: analytics.totalViews,      icon: Eye,           color: "#38bdf8" }, // sky blue
+              { title: "Test Drives", value: analytics.totalTestDrives, icon: TrendingUp,    color: "#15803d" }, // green-700 (matches navbar)
             ].map((card, i) => (
-              <StatCard key={i} title={card.title} value={card.value} icon={card.icon} index={i} />
+              <StatCard key={i} title={card.title} value={card.value} icon={card.icon} color={card.color} index={i} />
             ))}
           </motion.div>
         )}
@@ -184,7 +189,7 @@ export default function MyAdsPage() {
                 <p className="text-gray-500">No ads found. Post your first car!</p>
                 <button
                   onClick={() => router.push("/sell/add-car")}
-                  className="mt-4 px-6 py-2 rounded-xl bg-gradient-to-r from-[#00bcd4] to-[#0097a7] text-white font-semibold hover:shadow-lg transition"
+                  className="mt-4 px-6 py-2 rounded-xl bg-gradient-to-r from-[#22c55e] to-[#0097a7] text-white font-semibold hover:shadow-lg transition"
                 >
                   Post Your First Ad
                 </button>
@@ -200,7 +205,17 @@ export default function MyAdsPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="glass-card p-4 flex flex-col md:flex-row gap-4 items-start md:items-center"
+                    whileHover={{
+                      y: -2,
+                      borderColor: "#16a34a",
+                      boxShadow: "0 8px 25px rgba(34,197,94,0.3)",
+                    }}
+                    className="p-4 flex flex-col md:flex-row gap-4 items-start md:items-center rounded-[20px]"
+                    style={{
+                      background: "#ffffff",
+                      border: "2px solid #22c55e",
+                      boxShadow: "0 4px 15px rgba(34,197,94,0.08)",
+                    }}
                   >
                     {/* Image */}
                     <img
@@ -223,9 +238,9 @@ export default function MyAdsPage() {
                       </p>
 
                       <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-4">
-                        <span className="flex items-center gap-1"><Eye size={11} className="text-[#00bcd4]" /> {ad.views || 0} views</span>
-                        <span className="flex items-center gap-1"><Car size={11} className="text-[#00bcd4]" /> {ad.testDriveCount || 0} test drives</span>
-                        <span className="flex items-center gap-1"><Calendar size={11} className="text-[#00bcd4]" /> {new Date(ad.createdAt).toDateString()}</span>
+                        <span className="flex items-center gap-1"><Eye size={11} className="text-[#22c55e]" /> {ad.views || 0} views</span>
+                        <span className="flex items-center gap-1"><Car size={11} className="text-[#22c55e]" /> {ad.testDriveCount || 0} test drives</span>
+                        <span className="flex items-center gap-1"><Calendar size={11} className="text-[#22c55e]" /> {new Date(ad.createdAt).toDateString()}</span>
                       </div>
 
                       {/* Buttons */}
@@ -233,14 +248,14 @@ export default function MyAdsPage() {
                         <button
                           onClick={() => handleView(ad.images)}
                           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white transition-all hover:shadow-md"
-                          style={{ background: "linear-gradient(135deg, #00bcd4, #0097a7)" }}
+                          style={{ background: "linear-gradient(135deg, #22c55e, #0097a7)" }}
                         >
                           <Eye size={13} /> View
                         </button>
                         <button
                           onClick={() => router.push(`/sell/add-car?id=${ad._id}`)}
                           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
-                          style={{ background: "rgba(0,188,212,0.15)", color: "#0097a7", border: "1px solid rgba(0,188,212,0.3)" }}
+                          style={{ background: "rgba(34,197,94,0.12)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.3)" }}
                         >
                           <Edit3 size={13} /> Edit
                         </button>
@@ -266,7 +281,7 @@ export default function MyAdsPage() {
               <div style={{ width: "240px", height: "240px" }} className="mx-auto">
                 <PieChart width={240} height={240}>
                   <Pie
-                    data={pieData}
+                    data={pieSegments}
                     cx="50%"
                     cy="50%"
                     innerRadius={55}
@@ -275,8 +290,8 @@ export default function MyAdsPage() {
                     dataKey="value"
                     isAnimationActive
                   >
-                    {pieData.map((_, index) => (
-                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    {pieSegments.map((seg, index) => (
+                      <Cell key={index} fill={seg.color} />
                     ))}
                   </Pie>
                   <Tooltip
@@ -285,15 +300,11 @@ export default function MyAdsPage() {
                 </PieChart>
               </div>
               <div className="flex flex-col gap-3 mt-4">
-                {[
-                  { color: "#00bcd4", label: "Active Ads",  value: analytics.activeAds },
-                  { color: "#0097a7", label: "Sold Ads",    value: analytics.soldAds },
-                  { color: "#4dd0e1", label: "Pending Ads", value: analytics.totalAds - analytics.activeAds - analytics.soldAds },
-                ].map(({ color, label, value }) => (
-                  <div key={label} className="flex items-center justify-between">
+                {pieSegments.map(({ key, color, name, value }) => (
+                  <div key={key} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                      <span className="text-gray-600 text-sm">{label}</span>
+                      <span className="text-gray-600 text-sm">{name}</span>
                     </div>
                     <span className="text-gray-800 font-bold text-sm">{value}</span>
                   </div>
@@ -314,12 +325,22 @@ export default function MyAdsPage() {
             </div>
           ) : (
             requests.map((r) => (
-              <div
+              <motion.div
                 key={r._id}
-                className="glass-card p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+                whileHover={{
+                  y: -2,
+                  borderColor: "#16a34a",
+                  boxShadow: "0 8px 25px rgba(34,197,94,0.3)",
+                }}
+                className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 rounded-[20px]"
+                style={{
+                  background: "#ffffff",
+                  border: "2px solid #22c55e",
+                  boxShadow: "0 4px 15px rgba(34,197,94,0.08)",
+                }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ background: "linear-gradient(135deg, #00bcd4, #0097a7)" }}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ background: "linear-gradient(135deg, #22c55e, #0097a7)" }}>
                     {r.buyer?.name?.[0]?.toUpperCase() || "?"}
                   </div>
                   <div>
@@ -328,14 +349,14 @@ export default function MyAdsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0097a7]" style={{ background: "rgba(0,188,212,0.12)" }}>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#16a34a]" style={{ background: "rgba(34,197,94,0.12)" }}>
                     <Calendar size={12} /> {r.date}
                   </span>
-                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0097a7]" style={{ background: "rgba(0,188,212,0.12)" }}>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0284c7]" style={{ background: "rgba(56,189,248,0.15)" }}>
                     <Clock size={12} /> {r.time}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))
           )}
         </div>
@@ -387,7 +408,7 @@ export default function MyAdsPage() {
                   key={i}
                   onClick={() => setCurrentIndex(i)}
                   className="w-2 h-2 rounded-full transition-all"
-                  style={{ background: i === currentIndex ? "#00bcd4" : "rgba(255,255,255,0.3)" }}
+                  style={{ background: i === currentIndex ? "#22c55e" : "rgba(255,255,255,0.3)" }}
                 />
               ))}
             </div>
@@ -398,17 +419,17 @@ export default function MyAdsPage() {
       {/* Global Styles */}
       <style jsx>{`
         .glass-card {
-          background: rgba(255, 255, 255, 0.9);
-          backdrop-filter: blur(10px);
+          background: #ffffff;
           border-radius: 20px;
-          border: 1px solid rgba(0, 188, 212, 0.2);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+          border: 2px solid #22c55e;
+          box-shadow: 0 4px 15px rgba(34, 197, 94, 0.08);
           transition: all 0.3s ease;
         }
         .glass-card:hover {
-          background: rgba(255, 255, 255, 0.95);
-          border-color: rgba(0, 188, 212, 0.4);
-          box-shadow: 0 8px 25px rgba(0, 188, 212, 0.1);
+          background: #ffffff;
+          border-color: #16a34a;
+          box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+          transform: translateY(-2px);
         }
       `}</style>
     </div>
@@ -416,30 +437,30 @@ export default function MyAdsPage() {
 }
 
 /* ── Stat Card ── */
-function StatCard({ title, value, icon: Icon, index }) {
-  const gradients = [
-    "linear-gradient(135deg, rgba(0,188,212,0.15), rgba(0,151,167,0.15))",
-    "linear-gradient(135deg, rgba(0,151,167,0.15), rgba(77,208,225,0.15))",
-    "linear-gradient(135deg, rgba(77,208,225,0.15), rgba(38,198,218,0.15))",
-    "linear-gradient(135deg, rgba(38,198,218,0.15), rgba(0,188,212,0.15))",
-  ];
-  const iconColors = ["#00bcd4", "#0097a7", "#4dd0e1", "#26c6da"];
-
+function StatCard({ title, value, icon: Icon, color, index }) {
   return (
     <motion.div
       className="rounded-2xl p-5"
-      style={{ background: gradients[index % gradients.length], border: "1px solid rgba(0,188,212,0.15)", backdropFilter: "blur(20px)" }}
+      style={{
+        background: color,
+        boxShadow: `0 6px 18px ${color}55`,
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{
+        y: -4,
+        background: "#15803d",
+        boxShadow: "0 10px 25px rgba(21,128,61,0.45)",
+      }}
     >
       <div className="flex justify-between items-start mb-3">
-        <p className="text-gray-500 text-xs font-semibold uppercase tracking-wide">{title}</p>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${iconColors[index % iconColors.length]}22` }}>
-          <Icon size={16} style={{ color: iconColors[index % iconColors.length] }} />
+        <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">{title}</p>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.25)" }}>
+          <Icon size={16} className="text-white" />
         </div>
       </div>
-      <h2 className="text-3xl font-bold text-gray-800">
+      <h2 className="text-3xl font-bold text-white">
         <CountUp end={value || 0} duration={1.5} separator="," />
       </h2>
     </motion.div>

@@ -1,4 +1,5 @@
 import { Poppins } from "next/font/google";
+import ChatWidget from "@/components/ChatWidget";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${poppins.variable} font-sans`}>
         {children}
+        <ChatWidget/>
       </body>
     </html>
   );

@@ -1,13 +1,7 @@
-// /app/api/user/payment-methods/route.js
-
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import User from "@/models/User";
+import PaymentMethod from "@/models/PaymentMethod";
 import jwt from "jsonwebtoken";
-import Stripe from "stripe";
-
-// ✅ Initialize Stripe with secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 function getUserId(req) {
   const authHeader = req.headers.get("authorization");
@@ -21,7 +15,7 @@ function getUserId(req) {
   }
 }
 
-// ✅ GET - Get all payment methods
+// ✅ GET all payment methods for logged-in user
 export async function GET(req) {
   try {
     await connectDB();
@@ -33,18 +27,14 @@ export async function GET(req) {
       );
     }
 
-    const user = await User.findById(userId).select("paymentMethods stripeCustomerId");
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
+    const paymentMethods = await PaymentMethod.find({ user: userId }).sort({
+      isDefault: -1,
+      createdAt: -1,
+    });
 
     return NextResponse.json({
       success: true,
-      methods: user.paymentMethods || [],
-      stripeCustomerId: user.stripeCustomerId,
+      paymentMethods,
     });
   } catch (error) {
     console.error("❌ GET Payment Methods Error:", error);
@@ -55,7 +45,7 @@ export async function GET(req) {
   }
 }
 
-// ✅ POST - Add payment method
+// ✅ POST - Add new payment method
 export async function POST(req) {
   try {
     await connectDB();
@@ -67,235 +57,59 @@ export async function POST(req) {
       );
     }
 
-    const { paymentMethodId, type, accountNo, nameOnAccount } = await req.json();
+    const body = await req.json();
+    const { type, accountNo, nameOnAccount, last4, brand, expMonth, expYear, isDefault } = body;
 
-    if (!paymentMethodId && !accountNo) {
+    if (!type || !["card", "jazzcash", "easypaisa", "bank"].includes(type)) {
       return NextResponse.json(
-        { success: false, message: "Payment method details required" },
+        { success: false, message: "Valid payment type required" },
         { status: 400 }
       );
     }
 
-    let user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // ✅ If card payment via Stripe
-    if (paymentMethodId) {
-      // Get or create Stripe customer
-      if (!user.stripeCustomerId) {
-        const customer = await stripe.customers.create({
-          email: user.email,
-          name: user.name,
-          metadata: { userId: user._id.toString() },
-        });
-        user.stripeCustomerId = customer.id;
+    // Validate based on type
+    if (type === "card") {
+      if (!last4 || !brand || !expMonth || !expYear) {
+        return NextResponse.json(
+          { success: false, message: "Card details incomplete" },
+          { status: 400 }
+        );
       }
-
-      // Attach payment method to customer
-      await stripe.paymentMethods.attach(paymentMethodId, {
-        customer: user.stripeCustomerId,
-      });
-
-      // Get payment method details
-      const pm = await stripe.paymentMethods.retrieve(paymentMethodId);
-      
-      // Add to local database
-      const isFirst = user.paymentMethods.length === 0;
-      user.paymentMethods.push({
-        id: paymentMethodId,
-        type: "card",
-        last4: pm.card?.last4 || "****",
-        brand: pm.card?.brand || "card",
-        isDefault: isFirst,
-        nameOnAccount: nameOnAccount || "",
-      });
-      
-      await user.save();
-
-      return NextResponse.json({
-        success: true,
-        message: "Card added successfully",
-        methods: user.paymentMethods,
-      });
+    } else {
+      if (!accountNo || !nameOnAccount) {
+        return NextResponse.json(
+          { success: false, message: "Account number and name required" },
+          { status: 400 }
+        );
+      }
     }
 
-    // ✅ Mobile wallet or bank (manual entry)
-    const isFirst = user.paymentMethods.length === 0;
-    user.paymentMethods.push({
-      type: type || "jazzcash",
-      accountNo: accountNo,
+    // If this is the first payment method, make it default
+    const count = await PaymentMethod.countDocuments({ user: userId });
+    const shouldBeDefault = isDefault || count === 0;
+
+    const paymentMethod = await PaymentMethod.create({
+      user: userId,
+      type,
+      accountNo: accountNo || "",
       nameOnAccount: nameOnAccount || "",
-      isDefault: isFirst,
+      last4: last4 || "",
+      brand: brand || "",
+      expMonth: expMonth || null,
+      expYear: expYear || null,
+      isDefault: shouldBeDefault,
     });
-    
-    await user.save();
+
+    // Update User model if you have reference array
+    // await User.findByIdAndUpdate(userId, { $push: { paymentMethods: paymentMethod._id } });
 
     return NextResponse.json({
       success: true,
       message: "Payment method added successfully",
-      methods: user.paymentMethods,
+      paymentMethod,
     });
-
   } catch (error) {
     console.error("❌ POST Payment Method Error:", error);
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// ✅ DELETE - Remove payment method
-export async function DELETE(req) {
-  try {
-    await connectDB();
-    const userId = getUserId(req);
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const { searchParams } = new URL(req.url);
-    const methodId = searchParams.get("id");
-
-    if (!methodId) {
-      return NextResponse.json(
-        { success: false, message: "Method ID required" },
-        { status: 400 }
-      );
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // Find the method to delete
-    const methodToDelete = user.paymentMethods.find(
-      m => m._id.toString() === methodId
-    );
-
-    if (!methodToDelete) {
-      return NextResponse.json(
-        { success: false, message: "Payment method not found" },
-        { status: 404 }
-      );
-    }
-
-    // ✅ If Stripe card, detach from Stripe
-    if (methodToDelete.id && user.stripeCustomerId) {
-      try {
-        await stripe.paymentMethods.detach(methodToDelete.id);
-      } catch (e) {
-        console.log("Stripe detach error:", e.message);
-      }
-    }
-
-    // Remove from local database
-    user.paymentMethods = user.paymentMethods.filter(
-      m => m._id.toString() !== methodId
-    );
-
-    // If deleted method was default, set first as default
-    if (user.paymentMethods.length > 0) {
-      const hasDefault = user.paymentMethods.some(m => m.isDefault);
-      if (!hasDefault) {
-        user.paymentMethods[0].isDefault = true;
-      }
-    }
-
-    await user.save();
-
-    return NextResponse.json({
-      success: true,
-      message: "Payment method deleted successfully",
-      methods: user.paymentMethods,
-    });
-  } catch (error) {
-    console.error("❌ DELETE Payment Method Error:", error);
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// ✅ PATCH - Set default payment method
-export async function PATCH(req) {
-  try {
-    await connectDB();
-    const userId = getUserId(req);
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const { methodId } = await req.json();
-
-    if (!methodId) {
-      return NextResponse.json(
-        { success: false, message: "Method ID required" },
-        { status: 400 }
-      );
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // Find the method
-    const methodToSet = user.paymentMethods.find(
-      m => m._id.toString() === methodId
-    );
-
-    if (!methodToSet) {
-      return NextResponse.json(
-        { success: false, message: "Payment method not found" },
-        { status: 404 }
-      );
-    }
-
-    // ✅ If Stripe card, set as default in Stripe
-    if (methodToSet.id && user.stripeCustomerId) {
-      try {
-        await stripe.customers.update(user.stripeCustomerId, {
-          invoice_settings: { default_payment_method: methodToSet.id },
-        });
-      } catch (e) {
-        console.log("Stripe default set error:", e.message);
-      }
-    }
-
-    // Update local
-    user.paymentMethods.forEach(m => {
-      m.isDefault = m._id.toString() === methodId;
-    });
-
-    await user.save();
-
-    return NextResponse.json({
-      success: true,
-      message: "Default payment method updated",
-      methods: user.paymentMethods,
-    });
-  } catch (error) {
-    console.error("❌ PATCH Payment Method Error:", error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }
