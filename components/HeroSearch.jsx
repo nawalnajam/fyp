@@ -377,33 +377,34 @@ const analyzeAndSearch = async () => {
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2">
           {/* Voice Button */}
-          <button
-            type="button"
-            onClick={toggleVoice}
-            disabled={isProcessing}
-            className={`px-4 py-2 rounded-xl font-semibold transition flex items-center gap-2 ${
-              isListening 
-                ? "bg-red-500 text-white hover:bg-red-600 animate-pulse" 
-                : isProcessing
-                  ? "bg-blue-500 text-white cursor-not-allowed opacity-70"
-                  : voiceSupported 
-                    ? "bg-gray-100 text-gray-600 hover:bg-gray-200" 
-                    : "bg-gray-100 text-gray-300 cursor-not-allowed opacity-50"
-            }`}
-            title={isProcessing ? "Processing..." : "Search by voice (Urdu/English)"}
-            disabled={!voiceSupported || isProcessing}
-          >
-            {isListening ? (
-              <MicOff size={18} />
-            ) : isProcessing ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <Mic size={18} />
-            )}
-            <span className="text-xs hidden sm:inline">
-              {isListening ? "Stop" : isProcessing ? "Processing" : "Voice"}
-            </span>
-          </button>
+        {/* Voice Button - English only */}
+<button
+  type="button"
+  onClick={toggleVoice}
+  disabled={!voiceSupported || isProcessing}
+  className={`px-4 py-2 rounded-xl font-semibold transition flex items-center gap-2 ${
+    isListening
+      ? "bg-red-500 text-white hover:bg-red-600 animate-pulse"
+      : isProcessing
+      ? "bg-blue-500 text-white cursor-not-allowed opacity-70"
+      : voiceSupported
+      ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+      : "bg-gray-100 text-gray-300 cursor-not-allowed opacity-50"
+  }`}
+  title="Search by voice (English only)"
+>
+  {isListening ? (
+    <MicOff size={18} />
+  ) : isProcessing ? (
+    <Loader2 size={18} className="animate-spin" />
+  ) : (
+    <Mic size={18} />
+  )}
+  <span className="text-xs hidden sm:inline">
+    {isListening ? "Stop" : isProcessing ? "Processing" : "Voice"}
+  </span>
+</button>
+         
 
           {/* Camera Button */}
           <button
